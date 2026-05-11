@@ -18,9 +18,19 @@ app.use('/api/auth', authRoutes.router);
 app.use('/api/simulations', simulationRoutes);
 app.use('/api/exports', exportRoutes);
 
-// Route de santé
+// Basic root route to confirm the backend is running.
+app.get('/', (req, res) => {
+  res.send('Supply Chain Backend Running 🚀');
+});
+
+// API index route for quick local checks.
+app.get('/api', (req, res) => {
+  res.json({ message: 'API working ✅' });
+});
+
+// Lightweight health check for local monitoring.
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok' });
 });
 
 // Gestion des erreurs
