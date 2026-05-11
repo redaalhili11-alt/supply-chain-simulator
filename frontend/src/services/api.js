@@ -483,12 +483,18 @@ function saveState() {
 }
 
 
-const API_BASE_URL = 'https://supply-chain-backend-81j4.onrender.com/'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://supply-chain-backend-81j4.onrender.com/'
+
+// Clean up URL: remove trailing slash if present to avoid double slashes with /api
+const CLEAN_BASE_URL = API_BASE_URL.replace(/\/$/, '')
 
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: `${CLEAN_BASE_URL}/api`,
   headers: { 'Content-Type': 'application/json' }
 })
+
+console.log('Backend API target:', api.defaults.baseURL)
+
 
 // Request interceptor to add token
 api.interceptors.request.use(config => {
