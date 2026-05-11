@@ -5,9 +5,15 @@ require('dotenv').config();
 const authRoutes = require('./src/routes/auth');
 const simulationRoutes = require('./src/routes/simulations');
 const exportRoutes = require('./src/routes/exports');
+const initDb = require('./src/utils/initDb');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Initialisation de la base de données au démarrage
+initDb().catch(err => {
+  console.error('Impossible d\'initialiser la base de données au démarrage:', err.message);
+});
 
 // Middleware
 app.use(cors());

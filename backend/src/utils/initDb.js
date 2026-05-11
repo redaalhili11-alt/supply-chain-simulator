@@ -100,11 +100,15 @@ const initDb = async () => {
     await pool.query('CREATE INDEX IF NOT EXISTS idx_results_simulation ON monthly_results(simulation_id)');
 
     console.log('✅ Base de données initialisée avec succès !');
-    process.exit(0);
   } catch (err) {
     console.error('❌ Erreur lors de l initialisation:', err);
-    process.exit(1);
+    throw err;
   }
 };
 
-initDb();
+if (require.main === module) {
+  initDb().then(() => process.exit(0)).catch(() => process.exit(1));
+}
+
+module.exports = initDb;
+
