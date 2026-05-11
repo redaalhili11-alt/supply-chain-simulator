@@ -471,7 +471,7 @@ export default function DecisionControls({ onSubmit, currentMonth, loading, comp
         ) : (
           <LockedSection title="Gestion des Stocks" icon={Package} color="indigo" remainingRounds={remainingRounds} />
         )}
-        )}
+        
 
         {/* ── MARKETING ── */}
         {isUnlocked ? (
