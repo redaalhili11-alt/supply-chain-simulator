@@ -482,6 +482,14 @@ function saveState() {
   } catch { /* quota exceeded — ignore */ }
 }
 
+function getCurrentUserId() {
+  try {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return null;
+    return JSON.parse(userStr).id;
+  } catch { return null; }
+}
+
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://supply-chain-backend-81j4.onrender.com/'
 
@@ -522,6 +530,7 @@ export const simulationAPI = {
     const context = generateHistoricalContext()
     const sim = {
       id:                 nextSimId++,
+      userId:             getCurrentUserId(),
       name:               data.name,
       difficulty:         diffKey,
       total_months:       data.totalMonths,
@@ -540,7 +549,12 @@ export const simulationAPI = {
     return Promise.resolve({ data: sim })
   },
 
-  list: () => Promise.resolve({ data: mockSimulations }),
+  list: () => {
+    const uid = getCurrentUserId();
+    // Only return simulations for the current user. If no user, return empty.
+    const userSims = mockSimulations.filter(s => s.userId === uid);
+    return Promise.resolve({ data: userSims });
+  },
 
   get: (id) => {
     const sim = mockSimulations.find(s => s.id === Number(id))
