@@ -19,7 +19,7 @@ export default function Login() {
     try {
       if (isLogin) {
         const { data } = await authAPI.login({ email: formData.email, password: formData.password })
-        login(data.token, data.user)
+        await login(data.token, data.user)
         toast.success('Connexion réussie !')
         navigate('/')
       } else {

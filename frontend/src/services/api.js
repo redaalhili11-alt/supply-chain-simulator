@@ -476,11 +476,31 @@ function loadState() {
   } catch { return { sims: [], nextId: 1 } }
 }
 
-function saveState() {
+async function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ sims: mockSimulations, nextId: nextSimId }))
+    const data = { sims: mockSimulations, nextId: nextSimId };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (localStorage.getItem('token')) {
+      // Async push to backend
+      api.post('/auth/state', data).catch(err => console.error('Backend sync failed', err));
+    }
   } catch { /* quota exceeded — ignore */ }
 }
+
+export const syncStateDown = async () => {
+  if (localStorage.getItem('token')) {
+    try {
+      const res = await api.get('/auth/state');
+      if (res.data && res.data.sims) {
+        mockSimulations = res.data.sims;
+        nextSimId = res.data.nextId;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(res.data));
+      }
+    } catch (e) {
+      console.error('Failed to sync down state', e);
+    }
+  }
+};
 
 function getCurrentUserId() {
   try {

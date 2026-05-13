@@ -16,6 +16,14 @@ const initDb = async () => {
     `);
 
     await pool.query(`
+      CREATE TABLE IF NOT EXISTS user_states (
+        user_id INTEGER PRIMARY KEY REFERENCES users(id),
+        state_data JSONB NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS simulations (
         id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES users(id),

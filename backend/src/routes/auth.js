@@ -69,4 +69,35 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Obtenir l'état de jeu
+router.get('/state', authMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT state_data FROM user_states WHERE user_id = $1', [req.user.userId]);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0].state_data);
+    } else {
+      res.json({ sims: [], nextId: 1 });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Sauvegarder l'état de jeu
+router.post('/state', authMiddleware, async (req, res) => {
+  try {
+    const stateData = req.body;
+    await pool.query(
+      `INSERT INTO user_states (user_id, state_data, updated_at) 
+       VALUES ($1, $2, CURRENT_TIMESTAMP)
+       ON CONFLICT (user_id) 
+       DO UPDATE SET state_data = $2, updated_at = CURRENT_TIMESTAMP`,
+      [req.user.userId, stateData]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = { router, authMiddleware };
