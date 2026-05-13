@@ -518,7 +518,10 @@ export default function DecisionControls({ onSubmit, currentMonth, loading, comp
       {/* Submit */}
       <div className="flex justify-end pt-2">
         <button
-          onClick={() => onSubmit(decisions)}
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            onSubmit(decisions);
+          }}
           disabled={loading}
           className="btn-primary flex items-center gap-2 disabled:opacity-50 text-base px-8 py-3"
         >

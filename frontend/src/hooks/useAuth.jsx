@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-
+import { useSimStore } from '../store/useSimStore'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
@@ -19,12 +19,14 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(userData))
     setUser(userData)
+    useSimStore.getState().reset()
   }
 
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     setUser(null)
+    useSimStore.getState().reset()
   }
 
   return (
